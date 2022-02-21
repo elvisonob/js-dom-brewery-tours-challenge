@@ -2,13 +2,17 @@ const formEl = document.querySelector('#select-state-form')
 const inputEl = document.querySelector('#select-state')
 const ulEl = document.querySelector('#breweries-list')
 const filterEl = document.querySelector('#filter-by-type')
+const stateSearch = document.querySelector('#select-state')
 
 const state = {
     breweries: [],
+    //type: []
+
 }
 
 
 let url = 'https://api.openbrewerydb.org/breweries?by_state='
+
 
 formEl.addEventListener('submit', function(e) {
     e.preventDefault()
@@ -64,17 +68,19 @@ function renderBreweries() {
 
 function changeFilter() {
     const url2 = 'https://api.openbrewerydb.org/breweries?by_type='
-    filterEl.addEventListener('change', function() {
+    filterEl.addEventListener('change', function(e) {
+        e.preventDefault()
         const filterType = filterEl.value
         console.log('checkingfilter', filterType)
-        fetch(url2 + filterType)
+        fetch(`https://api.openbrewerydb.org/breweries?by_state=${stateSearch.value}&by_type=${filterType}`)
             .then(function(response) {
                 return response.json()
             })
-            .then(function(filterType) {
-                state.filterType = filterType
-                console.log('filter', state.filterType)
+            .then(function(type) {
+                state.breweries = type
+                console.log('filter', type)
                 render()
             })
     })
 }
+changeFilter()
